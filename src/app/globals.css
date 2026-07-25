@@ -1,26 +1,147 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-heading);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* Gowshala brand accent colors (direct utility classes: bg-gold, text-water etc.) */
+  --color-gold: var(--gold);
+  --color-success: var(--success);
+  --color-water: var(--water);
+  --color-earth: var(--earth);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  /* Base surfaces */
+  --background: #FBF8F1;        /* Cream */
+  --foreground: #1F2A1D;        /* near-black, slight green tint for warmth */
+  --card: #FFFFFF;
+  --card-foreground: #1F2A1D;
+  --popover: #FFFFFF;
+  --popover-foreground: #1F2A1D;
+
+  /* Primary = Forest Green */
+  --primary: #1E4D3B;
+  --primary-foreground: #FBF8F1;
+
+  /* Secondary = Earth Brown */
+  --secondary: #6B4226;
+  --secondary-foreground: #FBF8F1;
+
+  /* Muted = Beige tones */
+  --muted: #F0E9D8;
+  --muted-foreground: #5A5145;
+
+  /* Accent (hover states, subtle highlights) = soft beige-green */
+  --accent: #E4EFE6;
+  --accent-foreground: #1E4D3B;
+
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #E4DCC8;
+  --input: #E4DCC8;
+  --ring: #1E4D3B;
+  --radius: 0.625rem;
+
+  /* Special brand-only colors */
+  --gold: #D4A017;      /* main CTA / donate buttons */
+  --success: #61CE70;   /* subtle use - success states, badges */
+  --water: #6EC1E4;     /* contextual - water/hygiene sections */
+  --earth: #6B4226;
+
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1F2A1D;
+  --sidebar-primary: #1E4D3B;
+  --sidebar-primary-foreground: #FBF8F1;
+  --sidebar-accent: #F0E9D8;
+  --sidebar-accent-foreground: #1E4D3B;
+  --sidebar-border: #E4DCC8;
+  --sidebar-ring: #1E4D3B;
+}
+
+.dark {
+  --background: #16201A;
+  --foreground: #F0E9D8;
+  --card: #1E2B22;
+  --card-foreground: #F0E9D8;
+  --popover: #1E2B22;
+  --popover-foreground: #F0E9D8;
+  --primary: #3E8567;
+  --primary-foreground: #16201A;
+  --secondary: #8A5A38;
+  --secondary-foreground: #F0E9D8;
+  --muted: #26332B;
+  --muted-foreground: #B4AA96;
+  --accent: #26332B;
+  --accent-foreground: #F0E9D8;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: #3E8567;
+
+  --gold: #E0B23C;
+  --success: #61CE70;
+  --water: #6EC1E4;
+  --earth: #8A5A38;
+
+  --sidebar: #1E2B22;
+  --sidebar-foreground: #F0E9D8;
+  --sidebar-primary: #3E8567;
+  --sidebar-primary-foreground: #16201A;
+  --sidebar-accent: #26332B;
+  --sidebar-accent-foreground: #F0E9D8;
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: #3E8567;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
 }
