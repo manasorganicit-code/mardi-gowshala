@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -10,4 +5,116 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+// Enums
+
+enum DonationPurpose {
+  GENERAL
+  FEED
+  SPECIAL_OCCASION
+  MEMORIAL
+  MAINTENANCE
+  OTHER
+}
+
+enum DonationType {
+  ONE_TIME
+  RECURRING
+}
+
+enum DonationStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum MandateFrequency {
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+enum MandateStatus {
+  ACTIVE
+  PAUSED
+  CANCELLED
+}
+
+enum ContactSubject {
+  GENERAL_QUERY
+  VISIT
+  GHEE_ORDER
+  RECEIPT_REQUEST
+  OTHER
+}
+
+// Models
+
+model Donation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  donorName String
+  email     String
+  phone     String
+
+  amount Decimal @db.Decimal(10, 2)
+
+  purpose DonationPurpose @default(GENERAL)
+  type    DonationType    @default(ONE_TIME)
+  status  DonationStatus  @default(PENDING)
+
+  message String? @db.VarChar(300)
+
+  razorpayOrderId   String? @unique
+  razorpayPaymentId String? @unique
+  razorpaySignature String?
+
+  mandateId String?
+  mandate   RecurringMandate? @relation(fields: [mandateId], references: [id])
+
+  @@index([email])
+  @@index([status])
+  @@index([mandateId])
+}
+
+model RecurringMandate {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  razorpaySubscriptionId String @unique
+
+  donorName String
+  email     String
+  phone     String
+
+  frequency MandateFrequency
+  status    MandateStatus    @default(ACTIVE)
+
+  donations Donation[]
+
+  @@index([email])
+  @@index([status])
+}
+
+model ContactRequest {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  name  String
+  email String
+  phone String
+
+  subject ContactSubject
+
+  address      String?
+  gheeQuantity Int?
+
+  message String
+
+  @@index([subject])
 }
