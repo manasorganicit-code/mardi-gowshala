@@ -1,7 +1,17 @@
+"use client";
+
+import { useEffect } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
-export function DonationSuccess() {
+const AUTO_DISMISS_MS = 6000;
+
+export function DonationSuccess({ onDismiss }: { onDismiss: () => void }) {
+  useEffect(() => {
+    const timer = setTimeout(onDismiss, AUTO_DISMISS_MS);
+    return () => clearTimeout(timer);
+  }, [onDismiss]);
+
   return (
     <Card>
       <CardContent className="flex flex-col items-center gap-4 py-12 text-center">

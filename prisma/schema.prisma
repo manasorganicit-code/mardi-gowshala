@@ -37,6 +37,7 @@ enum MandateFrequency {
 }
 
 enum MandateStatus {
+  PENDING
   ACTIVE
   PAUSED
   CANCELLED
@@ -92,8 +93,9 @@ model RecurringMandate {
   email     String
   phone     String
 
+  purpose   DonationPurpose  @default(GENERAL)
   frequency MandateFrequency
-  status    MandateStatus    @default(ACTIVE)
+  status    MandateStatus    @default(PENDING)
 
   donations Donation[]
 

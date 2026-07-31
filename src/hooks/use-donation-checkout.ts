@@ -79,5 +79,10 @@ export function useDonationCheckout() {
     }
   }
 
-  return { startCheckout, status, errorMessage };
+  function resetStatus() {
+    setStatus("idle");
+    setErrorMessage("");
+  }
+
+  return { startCheckout, status, errorMessage, resetStatus };
 }

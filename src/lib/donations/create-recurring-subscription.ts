@@ -19,16 +19,17 @@ export async function createRecurringSubscription(data: DonationFormValues) {
     notes: { purpose: data.purpose, donorEmail: data.email },
   });
 
-  const mandate = await prisma.recurringMandate.create({
-    data: {
-      razorpaySubscriptionId: subscription.id,
-      donorName: data.donorName,
-      email: data.email,
-      phone: data.phone,
-      frequency: "MONTHLY",
-      status: "PENDING",
-    },
-  });
+const mandate = await prisma.recurringMandate.create({
+  data: {
+    razorpaySubscriptionId: subscription.id,
+    donorName: data.donorName,
+    email: data.email,
+    phone: data.phone,
+    purpose: data.purpose,
+    frequency: "MONTHLY",
+    status: "PENDING",
+  },
+});
 
   const donation = await prisma.donation.create({
     data: {

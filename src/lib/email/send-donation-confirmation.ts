@@ -3,6 +3,15 @@ import type { Donation } from "@/generated/prisma/client";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+function escapeHtml(input: string): string {
+  return input
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 export async function sendDonationConfirmationEmail(donation: Donation) {
   try {
     await resend.emails.send({
@@ -11,7 +20,7 @@ export async function sendDonationConfirmationEmail(donation: Donation) {
       subject: "Thank you for your donation",
       html: `
         <div style="font-family: sans-serif; line-height: 1.6;">
-          <h2>Thank you, ${donation.donorName}</h2>
+          <h2>Thank you, ${escapeHtml(donation.donorName)}</h2>
           <p>We've received your donation of ₹${donation.amount.toString()}.</p>
           <p>Your contribution goes directly toward the feed, medical care,
           and upkeep of our shelter's cows.</p>
@@ -22,7 +31,6 @@ export async function sendDonationConfirmationEmail(donation: Donation) {
       `,
     });
   } catch (error) {
-    // Email failure should never fail the donation itself — just log it
     console.error("Failed to send donation confirmation email:", error);
   }
 }

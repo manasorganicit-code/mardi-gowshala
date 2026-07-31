@@ -16,13 +16,14 @@ import { useDonationCheckout } from "@/hooks/use-donation-checkout";
 import { donationFormSchema, type DonationFormValues } from "@/lib/validations/donation-form";
 
 export function DonateForm() {
-  const { startCheckout, status, errorMessage } = useDonationCheckout();
+  const { startCheckout, status, errorMessage, resetStatus } = useDonationCheckout();
 
   const {
     register,
     handleSubmit,
     control,
     watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<DonationFormValues>({
     resolver: zodResolver(donationFormSchema),
@@ -31,7 +32,12 @@ export function DonateForm() {
 
   const message = watch("message");
 
-  if (status === "success") return <DonationSuccess />;
+  function handleDismissSuccess() {
+    resetStatus();
+    reset();
+  }
+
+  if (status === "success") return <DonationSuccess onDismiss={handleDismissSuccess} />;
 
   return (
     <Card>
