@@ -7,7 +7,7 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET!,
 });
 
-export async function createOneTimeOrder(data: DonationFormValues) {
+export async function createOneTimeOrder(data: DonationFormValues, ipAddress: string) {
   const amountInPaise = Math.round(data.amount * 100);
 
   const razorpayOrder = await razorpay.orders.create({
@@ -21,11 +21,11 @@ export async function createOneTimeOrder(data: DonationFormValues) {
       donorName: data.donorName,
       email: data.email,
       phone: data.phone,
+      ipAddress,
       amount: data.amount,
       purpose: data.purpose,
       type: "ONE_TIME",
       status: "PENDING",
-      message: data.message,
       razorpayOrderId: razorpayOrder.id,
     },
   });

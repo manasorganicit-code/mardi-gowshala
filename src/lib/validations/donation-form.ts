@@ -14,19 +14,18 @@ export type PresetAmount = (typeof PRESET_AMOUNTS)[number];
 
 export const donationFormSchema = z.object({
   purpose: z.enum(["GENERAL", "FEED", "SPECIAL_OCCASION", "MEMORIAL", "MAINTENANCE", "OTHER"]),
-  amount: z.union([
-    z.literal(101),
-    z.literal(501),
-    z.literal(1001),
-    z.literal(2501),
-    z.literal(5001),
-    z.literal(7501),
-  ]),
+  amount: z
+    .number({ error: "Please select a donation amount" })
+    .refine((val) => PRESET_AMOUNTS.includes(val as PresetAmount), {
+      message: "Please select a donation amount",
+    }),
   type: z.enum(["ONE_TIME", "RECURRING"]),
   donorName: z.string().min(2, "Name is too short").max(100),
   email: z.email("Enter a valid email address"),
   phone: z.string().regex(/^\+?[0-9]{10,15}$/, "Enter a valid phone number"),
-  message: z.string().max(300, "Keep it under 300 characters").optional(),
+  agreedToTerms: z.literal(true, {
+    error: "Please agree to the Terms, Privacy Policy, and Refund Policy to continue",
+  }),
 });
 
 export type DonationFormValues = z.infer<typeof donationFormSchema>;

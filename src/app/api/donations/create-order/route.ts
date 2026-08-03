@@ -3,6 +3,7 @@ import { z } from "zod";
 import { donationFormSchema } from "@/lib/validations/donation-form";
 import { createOneTimeOrder } from "@/lib/donations/create-one-time-order";
 import { createRecurringSubscription } from "@/lib/donations/create-recurring-subscription";
+import { getClientIp } from "@/lib/get-client-ip";
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,10 +17,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const ipAddress = getClientIp(req.headers);
+
     const result =
       parsed.data.type === "RECURRING"
-        ? await createRecurringSubscription(parsed.data)
-        : await createOneTimeOrder(parsed.data);
+        ? await createRecurringSubscription(parsed.data, ipAddress)
+        : await createOneTimeOrder(parsed.data, ipAddress);
 
     return NextResponse.json(result);
   } catch (error) {

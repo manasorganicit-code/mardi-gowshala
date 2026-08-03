@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/expire-stale-donations",
+      "schedule": "0 3 * * *"
+    }
+  ]
+}

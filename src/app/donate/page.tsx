@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 
 export default function DonatePage() {
   return (
-    <div className="mx-auto grid min-h-screen w-full max-w-6xl grid-cols-1 gap-16 px-6 py-20 md:px-12 lg:grid-cols-2 lg:gap-20">
+    <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-16 px-6 py-20 md:px-12 lg:grid-cols-2 lg:gap-20 lg:items-center">
       {/* Left: narrative panel */}
-      <div className="flex flex-col justify-center">
+      <div className="flex flex-col">
         <div className="mb-6 h-px w-16 bg-gold" />
         <p className="mb-3 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
           Seva &middot; Donation

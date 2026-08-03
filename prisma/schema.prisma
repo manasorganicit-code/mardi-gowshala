@@ -28,6 +28,7 @@ enum DonationStatus {
   SUCCESS
   FAILED
   REFUNDED
+  EXPIRED
 }
 
 enum MandateFrequency {
@@ -61,14 +62,13 @@ model Donation {
   donorName String
   email     String
   phone     String
+  ipAddress String?
 
   amount Decimal @db.Decimal(10, 2)
 
   purpose DonationPurpose @default(GENERAL)
   type    DonationType    @default(ONE_TIME)
   status  DonationStatus  @default(PENDING)
-
-  message String? @db.VarChar(300)
 
   razorpayOrderId   String? @unique
   razorpayPaymentId String? @unique

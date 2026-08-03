@@ -5,32 +5,29 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PurposeField } from "@/components/donate/purpose-field";
 import { AmountField } from "@/components/donate/amount-field";
 import { DonationTypeField } from "@/components/donate/donation-type-field";
 import { DonorFields } from "@/components/donate/donor-fields";
-import { MessageField } from "@/components/donate/message-field";
+import { TermsAgreementField } from "@/components/donate/terms-agreement-field";
 import { DonationSuccess } from "@/components/donate/donation-success";
 import { useDonationCheckout } from "@/hooks/use-donation-checkout";
 import { donationFormSchema, type DonationFormValues } from "@/lib/validations/donation-form";
 
 export function DonateForm() {
-  const { startCheckout, status, errorMessage, resetStatus } = useDonationCheckout();
+  const { startCheckout, status, errorMessage, resetStatus, isProcessing } = useDonationCheckout();
 
   const {
     register,
     handleSubmit,
     control,
-    watch,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<DonationFormValues>({
     resolver: zodResolver(donationFormSchema),
-    defaultValues: { purpose: "GENERAL", type: "ONE_TIME" },
+    defaultValues: { purpose: "GENERAL", type: "ONE_TIME", agreedToTerms: false as unknown as true },
   });
-
-  const message = watch("message");
 
   function handleDismissSuccess() {
     resetStatus();
@@ -43,7 +40,6 @@ export function DonateForm() {
     <Card>
       <CardHeader>
         <CardTitle>Make a Donation</CardTitle>
-        <CardDescription>All amounts are in Indian Rupees (INR)</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(startCheckout)} method="post" className="flex flex-col gap-6">
@@ -51,7 +47,7 @@ export function DonateForm() {
           <AmountField control={control} errors={errors} />
           <DonationTypeField control={control} />
           <DonorFields register={register} errors={errors} />
-          <MessageField register={register} value={message} />
+          <TermsAgreementField register={register} errors={errors} />
 
           {status === "error" && (
             <div className="flex items-start gap-2 bg-destructive/10 p-3 text-sm text-destructive">
@@ -63,10 +59,10 @@ export function DonateForm() {
           <Button
             type="submit"
             size="lg"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isProcessing}
             className="w-full bg-gold text-white hover:bg-gold/90"
           >
-            {isSubmitting ? (
+            {isSubmitting || isProcessing ? (
               <>
                 <Loader2 className="size-4 animate-spin" />
                 Processing

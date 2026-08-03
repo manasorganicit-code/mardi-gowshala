@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { loadRazorpayScript } from "@/lib/razorpay-checkout";
 import type { DonationFormValues } from "@/lib/validations/donation-form";
 
@@ -16,10 +16,23 @@ interface RazorpayHandlerResponse {
 export function useDonationCheckout() {
   const [status, setStatus] = useState<CheckoutStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Synchronous guard — immune to React's state-batching, so even 2-3 clicks
+  // fired in the same tick (before any re-render) are blocked correctly.
+  const isProcessingRef = useRef(false);
 
   async function startCheckout(data: DonationFormValues) {
+    if (isProcessingRef.current) return;
+    isProcessingRef.current = true;
+    setIsProcessing(true);
     setStatus("idle");
     setErrorMessage("");
+
+    function release() {
+      isProcessingRef.current = false;
+      setIsProcessing(false);
+    }
 
     try {
       const orderRes = await fetch("/api/donations/create-order", {
@@ -68,14 +81,20 @@ export function useDonationCheckout() {
               "Payment was received but could not be verified. Please contact us with your payment ID."
             );
           }
+          release();
         },
-        modal: { ondismiss: () => {} },
+        modal: {
+          ondismiss: () => {
+            release();
+          },
+        },
       });
 
       razorpay.open();
     } catch (err) {
       setStatus("error");
       setErrorMessage(err instanceof Error ? err.message : "Something went wrong");
+      release();
     }
   }
 
@@ -84,5 +103,5 @@ export function useDonationCheckout() {
     setErrorMessage("");
   }
 
-  return { startCheckout, status, errorMessage, resetStatus };
+  return { startCheckout, status, errorMessage, resetStatus, isProcessing };
 }
