@@ -45,10 +45,11 @@ enum MandateStatus {
 }
 
 enum ContactSubject {
-  GENERAL_QUERY
-  VISIT
-  GHEE_ORDER
-  RECEIPT_REQUEST
+  GENERAL_INQUIRY
+  CALLBACK_REQUEST
+  GHEE_PURCHASE
+  GOSHALA_VISIT
+  DONATION_RELATED
   OTHER
 }
 
@@ -113,10 +114,7 @@ model ContactRequest {
 
   subject ContactSubject
 
-  address      String?
-  gheeQuantity Int?
-
-  message String
+  message String @db.Text
 
   @@index([subject])
 }
