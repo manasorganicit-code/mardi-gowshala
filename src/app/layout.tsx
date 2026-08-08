@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Navbar } from "@/components/layout/navbar";
 
 const playfairDisplayHeading = Playfair_Display({
   subsets: ["latin"],
@@ -28,7 +29,10 @@ export default function RootLayout({
       lang="en"
       className={cn("h-full", "antialiased", "font-sans", outfit.variable, playfairDisplayHeading.variable)}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <Navbar />
+        {children}
+        </body>
     </html>
   );
 }
